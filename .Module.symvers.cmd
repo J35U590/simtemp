@@ -1,0 +1,1 @@
+savedcmd_/home/ubuntu/kernel-modules/simtemp/Module.symvers :=  scripts/mod/modpost -M -m -a      -o /home/ubuntu/kernel-modules/simtemp/Module.symvers -T /home/ubuntu/kernel-modules/simtemp/modules.order -i Module.symvers -e 

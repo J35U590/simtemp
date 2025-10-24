@@ -1,0 +1,1 @@
+savedcmd_/home/ubuntu/kernel-modules/simtemp/kernel/nxp_simtemp.mod := printf '%s\n'   nxp_simtemp.o | awk '!x[$$0]++ { print("/home/ubuntu/kernel-modules/simtemp/kernel/"$$0) }' > /home/ubuntu/kernel-modules/simtemp/kernel/nxp_simtemp.mod
