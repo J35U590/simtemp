@@ -143,7 +143,6 @@ Ctr+ c para salir
 
 ## 📎 Links
 
-🎥 Video Demo: Pending
+🎥 Video Demo: https://youtu.be/Il3ymzVQFHs
 
 💻 Git Repository: https://github.com/J35U590/simtemp.git
-
