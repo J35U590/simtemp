@@ -8,7 +8,7 @@ This project implements a **simulated temperature sensor** divided into two main
 
 The following diagram illustrates the interaction between user-space and kernel-space components.
 
-![Block Diagram](docs/block_diagram_simtemp.png)
+![Block Diagram](block_diagram_simtemp.png)
 
 ## Interaction Description
 
