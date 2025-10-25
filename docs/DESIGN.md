@@ -5,39 +5,52 @@ This project implements a **simulated temperature sensor** divided into two main
 - A **userspace CLI tool** (`main.py`) that interacts with the kernel driver through **sysfs**, **character device**, and **polling** interfaces.
 
  ## Block Diagram
- ┌──────────────────────────────────────────────────────┐
- │                     User Space                       │
- │                                                      │
- │   ┌──────────────────────────────┐     ┌──────────┐  │
- │   │ CLI / Test App (main.py)     │     │  Sysfs   │  │
- │   │  - open("/dev/simtemp")      │     │ /sys/... │  │
- │   │  - read() / poll() events    │<───▶│ threshold│  │
- │   │  - non-blocking I/O          │     │ sampling │  │
- │   │  - write new temp (debug)    │     │ mode     │  │
- │   └──────────────┬───────────────┘     │ stats    │  │
- │                  │                     └──────────┘  │
- └──────────────────┼────────────────────────────────────┘
-                    │ read, write, poll
-                    │ sysfs read/write
- ┌──────────────────┴────────────────────────────────────┐
- │                     Kernel Space                      │
- │                                                      │
- │   ┌──────────────────────────────────────────────┐   │
- │   │  simtemp.ko (Platform Driver)                │   │
- │   │----------------------------------------------│   │
- │   │ • Periodic sampling via hrtimer              │   │
- │   │ • Randomized / ramp / noisy temp generation  │   │
- │   │ • Character device (/dev/simtemp)            │   │
- │   │ • Sysfs attributes for configuration         │   │
- │   │ • poll() and waitqueue for event signaling   │   │
- │   │ • Threshold alerts via POLLPRI events        │   │
- │   └────────────────────┬─────────────────────────┘   │
- │                        │                             │
- │       ┌────────────────┴──────────────────┐          │
- │       │ wait_queues + atomic counters     │          │
- │       │ hrtimer callback (simtemp_timer_cb)│         │
- │       └───────────────────────────────────┘          │
- └──────────────────────────────────────────────────────┘
+ ┌───────────────────────────────────────────────────────────────┐
+│                         User Space                            │
+│                                                               │
+│  CLI / Test App (main.py)                                     │
+│  ───────────────────────────────                              │
+│  • open("/dev/simtemp")                                       │
+│  • read() / poll() events                                     │
+│  • non-blocking I/O                                           │
+│  • write new temp (debug)                                     │
+│                                                               │
+│             │                                                  │
+│             │                                                  │
+│             ▼                                                  │
+│       Sysfs (/sys/...)                                         │
+│       ┌───────────────────────┐                                │
+│       │ threshold             │                                │
+│       │ sampling              │                                │
+│       │ mode                  │                                │
+│       │ stats                 │                                │
+│       └───────────────────────┘                                │
+│                                                               │
+│───────────────────────────────────────────────────────────────│
+│             read, write, poll                                  │
+│             sysfs read/write                                   │
+└───────────────────────────────────────────────────────────────┘
+                │
+                │
+                ▼
+┌───────────────────────────────────────────────────────────────┐
+│                         Kernel Space                          │
+│                                                               │
+│  simtemp.ko (Platform Driver)                                 │
+│  ───────────────────────────────                              │
+│  • Periodic sampling via hrtimer                              │
+│  • Randomized / ramp / noisy temp generation                  │
+│  • Character device (/dev/simtemp)                            │
+│  • Sysfs attributes for configuration                         │
+│  • poll() and waitqueue for event signaling                   │
+│  • Threshold alerts via POLLPRI events                        │
+│                                                               │
+│        │                                                      │
+│        ▼                                                      │
+│  wait_queues + atomic counters                                │
+│  hrtimer callback (simtemp_timer_cb)                          │
+└───────────────────────────────────────────────────────────────┘
+
 ## Interaction Description
 
 ### 1. **Device Initialization**
