@@ -98,11 +98,11 @@ static enum hrtimer_restart simtemp_timer_cb(struct hrtimer *t)
 
     simtemp_generate(s);
 
-    /* Actualizar estado */
+    /* Update status */
     s->above_threshold = (s->temperature_mC >= s->threshold_mC);
     s->new_sample = true;
 
-    /* Mantener alerta activa mientras esté sobre el umbral */
+    /* Keep active alert while over the threshold */
     if (s->above_threshold) {
         s->threshold_event = true;
         atomic_long_inc(&s->alerts);
@@ -415,6 +415,6 @@ module_exit(simtemp_module_exit);
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Jesús García");
-MODULE_DESCRIPTION("Simulated temperature sensor with sysfs controls (step 7)");
+MODULE_DESCRIPTION("Simulated temperature sensor");
 
 

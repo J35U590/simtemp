@@ -22,11 +22,11 @@ int main(void)
 
     fd = open(DEVICE_PATH, O_RDONLY | O_NONBLOCK);
     if (fd < 0) {
-        perror("No se pudo abrir /dev/simtemp");
+        perror("Could not open /dev/simtemp");
         return 1;
     }
 
-    printf("Leyendo temperatura (modo no bloqueante)...\n");
+    printf("Reading temperature (non-locking mode)...\n");
 
     while (1) {
         ssize_t ret = read(fd, &sample, sizeof(sample));
@@ -36,19 +36,19 @@ int main(void)
                 usleep(200000); // 200 ms
                 continue;
             } else {
-                perror("Error en read");
+                perror("Read error");
                 break;
             }
         } else if (ret == 0) {
-            printf("Fin de lectura.\n");
+            printf("Reading end.\n");
             break;
         } else if (ret != sizeof(sample)) {
-            fprintf(stderr, "Tamaño inesperado: leídos %zd bytes (esperaba %zu)\n",
+            fprintf(stderr, "Unexpected size: read %zd bytes (expected %zu)\n",
                     ret, sizeof(sample));
             break;
         }
 
-        printf("Temperatura: %.2f °C  (timestamp=%" PRId64 " ns)\n",
+        printf("Temperature: %.2f °C  (timestamp=%" PRId64 " ns)\n",
             sample.temperature / 1000.0, sample.timestamp_ns);
 
         usleep(1000000); // 1 s

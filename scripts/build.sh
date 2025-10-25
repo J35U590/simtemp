@@ -1,56 +1,56 @@
 #!/bin/bash
-set -e  # salir al primer error
+set -e  # leave at the first mistake
 
-# --- Colores para legibilidad ---
+# --- Colors for readability ---
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No color
 
-# --- Función auxiliar ---
+# --- Auxiliar function ---
 fail() {
     echo -e "${RED}Error:${NC} $1" >&2
     exit 1
 }
 
-# --- Detectar kernel headers ---
+# --- Detect kernel headers ---
 KVER=$(uname -r)
 KDIR="/lib/modules/$KVER/build"
 
-echo -e "${YELLOW}[*] Verificando headers del kernel...${NC}"
+echo -e "${YELLOW}[*] Checking kernel headers...${NC}"
 if [ ! -d "$KDIR" ]; then
-    fail "No se encontraron headers en $KDIR. Instálalos con:
+    fail "No headers were found in $KDIR. Install them with:
     sudo apt install linux-headers-$(uname -r)"
 fi
-echo -e "${GREEN}[OK] Headers encontrados en $KDIR${NC}"
+echo -e "${GREEN}[OK] Headers found in $KDIR${NC}"
 
-# --- Compilar módulo ---
-echo -e "${YELLOW}[*] Compilando módulo del kernel...${NC}"
+# --- Compile module ---
+echo -e "${YELLOW}[*] Compiling kernel module...${NC}"
 cd ~/kernel-modules/simtemp/kernel
-make clean -C "$KDIR" M=$(pwd) modules || fail "Falló clean"
-make -C "$KDIR" M=$(pwd) modules || fail "Falló la compilación del módulo"
-echo -e "${GREEN}[OK] Módulo compilado correctamente${NC}"
+make clean -C "$KDIR" M=$(pwd) modules || fail "Clean failed"
+make -C "$KDIR" M=$(pwd) modules || fail "Module compilation failed"
+echo -e "${GREEN}[OK] Module compiled successfully${NC}"
 
-# --- Compilar programas de usuario ---
+# --- Compiling user programs ---
 
-echo -e "${YELLOW}[*] Compilando programa de usuario...${NC}"
+echo -e "${YELLOW}[*] Compiling user program...${NC}"
 cd ~/kernel-modules/simtemp/kernel
 #poll_read.c
-gcc -Wall -O2 poll_read.c -o poll_read || fail "Falló compilación de poll_read.c"
-echo -e "${GREEN}[OK] Programa de usuario poll_read.c compilado${NC}"
+gcc -Wall -O2 poll_read.c -o poll_read || fail "poll_read.c compilation failed"
+echo -e "${GREEN}[OK] poll_read.c compiled${NC}"
 
 #blocking_read.c
-gcc -Wall -O2 blocking_read.c -o blocking_read || fail "Falló compilación de blocking_read.c"
-echo -e "${GREEN}[OK] Programa de usuario blocking_read.c compilado${NC}"
+gcc -Wall -O2 blocking_read.c -o blocking_read || fail "blocking_read.c compilation failed"
+echo -e "${GREEN}[OK] blocking_read.c compiled${NC}"
 
 #nonblocking_read.c
-gcc -Wall -O2 nonblocking_read.c -o nonblocking_read || fail "Falló compilación de nonblocking_read.c"
-echo -e "${GREEN}[OK] Programa de usuario nonblocking_read.c compilado${NC}"
+gcc -Wall -O2 nonblocking_read.c -o nonblocking_read || fail "nonblocking_read.c compilation failed"
+echo -e "${GREEN}[OK] nonblocking_read.c compiled${NC}"
 
 #main.py
 cd ~/kernel-modules/simtemp/user/cli
-chmod +x main.py || fail "Falló compilación de main.py"
-echo -e "${GREEN}[OK] Programa de usuario main.py compilado${NC}"
+chmod +x main.py || fail "main.py compilation failed"
+echo -e "${GREEN}[OK] main.py compiled${NC}"
 
-echo -e "${GREEN}✅ Build completado exitosamente.${NC}"
+echo -e "${GREEN}✅ Build completed successfully.${NC}"
 

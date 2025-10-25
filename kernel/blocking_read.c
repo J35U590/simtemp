@@ -15,18 +15,18 @@ int main() {
 
     fd = open("/dev/simtemp", O_RDONLY);
     if (fd < 0) {
-        perror("Error al abrir /dev/simtemp");
+        perror("Error opening /dev/simtemp");
         return 1;
     }
 
-    printf("Leyendo temperatura (modo bloqueante)...\n");
+    printf("Reading temperature (block mode)...\n");
     while (1) {
         int ret = read(fd, &sample, sizeof(sample));
         if (ret < 0) {
-            perror("Error en read");
+            perror("Read error");
             break;
         }
-        printf("Temperatura actual: %.2f °C  (timestamp=%lld ns)\n",
+        printf("Current temperature: %.2f °C  (timestamp=%lld ns)\n",
                sample.temperature / 1000.0, (long long)sample.timestamp_ns);
         sleep(1);
     }

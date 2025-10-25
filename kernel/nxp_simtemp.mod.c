@@ -128,4 +128,4 @@ MODULE_INFO(depends, "");
 MODULE_ALIAS("of:N*T*Cnxp,simtemp");
 MODULE_ALIAS("of:N*T*Cnxp,simtempC*");
 
-MODULE_INFO(srcversion, "4FD014AC1587E6F78C79782");
+MODULE_INFO(srcversion, "740355A01EE59E75E06B1E3");
